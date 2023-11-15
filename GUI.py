@@ -3,9 +3,22 @@ from tkinter import ttk
 
 import pickle
 import pandas as pd
-
+import numpy as np
+import json
 
 # Create the main window
+from joblib import dump, load
+rf5 = load('random_forest4.joblib') 
+
+stfips_json = json.load(open('stfips.json'))
+prcitshp_json = json.load(open('prcitshp.json'))
+class94_json = json.load(open('class94.json'))
+dind02_json = json.load(open('dind02.json'))
+docc00_json = json.load(open('docc00.json'))
+ftpt94_json = json.load(open('ftpt94.json'))
+occ_json = json.load(open('occ.json'))
+
+
 root = tk.Tk()
 root.title("User Information")
 
@@ -78,7 +91,10 @@ marital_combo['values'] = tuple(marital)
 marital_combo.pack()
 
 # Citizenship input
-citizenship = ["Native, born in US", "Native, born in Puerto Rico or US Outlying Area", "Native, born abroad of American Parent(s)", "Foreign born, US citizen by naturalization", "Foreign born, Not a citizen of the US"]
+citizenship = ['Native, Born In US', 'Foreign Born, US Cit By Naturalization',\
+       'Foreign Born, Not a US Citizen', \
+       'Native, Born Abroad Of US Parent(s)',\
+       'Native, Born in PR or US Outlying Area']
 citizenship_label = tk.Label(root, text="Citizenship status:")
 citizenship_label.pack()
 citizenship_var = tk.StringVar()
@@ -252,19 +268,32 @@ def submit():
     industry = industry_var.get()
     docc = docc_var.get()
     occ = occupation_var.get()
+    
+    in_list = [cbsa, age,gender, education, race,ethnicity,marital]
+    stfips_class = list(stfips_json.keys())[list(stfips_json.values()).index(state)]
+    prcitshp_class =   list(prcitshp_json.keys())[list(prcitshp_json.values()).index(citizenship)]
+    ftpt94_class = list(ftpt94_json.keys())[list(ftpt94_json.values()).index(ftpt)]
+    class94_class =   list(class94_json.keys())[list(class94_json.values()).index(sector)]
+    docc00_class = list(docc00_json.keys())[list(docc00_json.values()).index(docc)]
+    dind02_class =   list(dind02_json.keys())[list(dind02_json.values()).index(industry)]
+    occ_class =   list(occ_json.keys())[list(occ_json.values()).index(occ)]
+    in_list += [stfips_class,  prcitshp_class, ftpt94_class,class94_class,docc00_class,dind02_class ,occ_class]
+    
+    pred = rf5.predict(np.array(in_list).reshape(1, -1))
+    print(pred)
+    
+    #AL,33860,49.0,1,41,2,0.0,1,"Native, Born In US","FT Hours (35+), Usually FT","Private, For Profit",865.0,Construction and extraction occupations,Construction,Electricians,44980.0,63421.799999999996
+    
+#     stfips_json = json.load('stfips.json')
+# prcitshp_json = json.load('prcitshp.json')
+# class94_json = json.load('class94.json')
+# dind02_json = json.load('dind02.json')
+# docc00_json = json.load('docc00.json')
+# ftpt94_json = json.load('ftpt94.json')
+# occ_json = json.load('occ.json')
+
     info_label.config(text = \
-                      f"Age: {age}, type: {type(age)} \n \
-                        CBSA: {cbsa}, type: {type(cbsa)} \n \
-                        Gender: {gender}, type: {type(gender)} \n \
-                        Education: {education}, type: {type(education)} \n \
-                        Race: {race}, type: {type(race)} \n \
-                        Ethnicity: {ethnicity}, type: {type(ethnicity)} \n \
-                        Citizenship: {citizenship}, type: {type(citizenship)} \n \
-                        Marital Status: {marital}, type: {type(marital)} \n \
-                        FT-PT: {ftpt}, type: {type(ftpt)} \n \
-                        Sector: {sector}, type: {type(sector)} \n \
-                        Industry: {industry}, type: {type(industry)} \n \
-                        Occupation: {occ}, type: {type(occ)} \n ")
+                      f"Salary Prediction: {pred[0]}, type: {type(pred)}")
 
 
 # Submit Button
