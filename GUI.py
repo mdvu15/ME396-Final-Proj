@@ -95,6 +95,8 @@ ftpt_combo = ttk.Combobox(root, textvariable=ftpt_var, width=30)
 ftpt_combo['values'] = tuple(ftpt)
 ftpt_combo.pack()
 
+
+
 # Sector Input
 sector = ['Private, For Profit', 'Government - State', 'Government - Local', \
             'Government - Federal', 'Private, Nonprofit']
@@ -144,6 +146,34 @@ industry_var = tk.StringVar()
 industry_combo = ttk.Combobox(root, textvariable=industry_var, width=30)
 industry_combo['values'] = tuple(sorted(industry))
 industry_combo.pack()
+
+# High level occupation input
+docc = ['Office and administrative support occupations',
+       'Education, training, and library occupations',
+       'Construction and extraction occupations',
+       'Business and financial operations occupations',
+       'Production occupations',
+       'Food preparation and serving related occupations',
+       'Management occupations', 'Healthcare support occupations',
+       'Legal occupations', 'Sales and related occupations',
+       'Architecture and engineering occupations',
+       'Community and social service occupations',
+       'Healthcare practitioner and technical occupations',
+       'Transportation and material moving occupations',
+       'Computer and mathematical science occupations',
+       'Installation, maintenance, and repair occupations',
+       'Protective service occupations',
+       'Arts, design, entertainment, sports, and media occupations',
+       'Personal care and service occupations',
+       'Farming, fishing, and forestry occupations',
+       'Building and grounds cleaning and maintenance occupations',
+       'Life, physical, and social science occupations']
+docc_label = tk.Label(root, text="Occupation group:")
+docc_label.pack()
+docc_var = tk.StringVar()
+docc_combo = ttk.Combobox(root, textvariable=docc_var, width=30)
+docc_combo['values'] = tuple(sorted(docc))
+docc_combo.pack()
 
 # Occupation input
 with open('occ.pkl', 'rb') as file:
@@ -220,6 +250,7 @@ def submit():
 
     sector = sector_var.get()
     industry = industry_var.get()
+    docc = docc_var.get()
     occ = occupation_var.get()
     info_label.config(text = \
                       f"Age: {age}, type: {type(age)} \n \
