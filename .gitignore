@@ -1,4 +1,5 @@
 data/
 .DS_Store
 *.tar.gz
+*.joblib
 cps_data_2010_2020.csv
